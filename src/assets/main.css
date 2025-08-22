@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+body{
+  font-family: 'Poppins';
+}
+
+*{
+/* @apply border-red-500 border */
+}
