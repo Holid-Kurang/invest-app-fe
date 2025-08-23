@@ -61,6 +61,23 @@ class ApiService {
         return this.axiosInstance.post('/auth/login', { email, password })
     }
 
+    // Generic HTTP methods
+    async get(url: string, config?: any) {
+        return this.axiosInstance.get(url, config)
+    }
+
+    async post(url: string, data?: any, config?: any) {
+        return this.axiosInstance.post(url, data, config)
+    }
+
+    async put(url: string, data?: any, config?: any) {
+        return this.axiosInstance.put(url, data, config)
+    }
+
+    async delete(url: string, config?: any) {
+        return this.axiosInstance.delete(url, config)
+    }
+
     // Dashboard endpoints
     async getInvestorDashboard() {
         return this.axiosInstance.get('/dashboard/investor')
@@ -73,6 +90,14 @@ class ApiService {
 
     async createInvestment(amount: number, proof?: string) {
         return this.axiosInstance.post('/invest', { amount, proof })
+    }
+
+    async createInvestmentWithFile(formData: FormData) {
+        return this.axiosInstance.post('/invest', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
     }
 
     // Return endpoints

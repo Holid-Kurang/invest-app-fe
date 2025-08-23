@@ -72,11 +72,6 @@ export function useAuth() {
         router.push('/')
     }
 
-    // Check if user has specific role
-    const hasRole = (role: 'admin' | 'investor') => {
-        return user.value?.role === role
-    }
-
     // Redirect based on role
     const redirectByRole = () => {
         if (user.value?.role === 'admin') {
@@ -101,7 +96,9 @@ export function useAuth() {
         initAuth,
         login,
         logout,
-        hasRole,
         redirectByRole,
+
+        // API instance
+        api: apiService
     }
 }
