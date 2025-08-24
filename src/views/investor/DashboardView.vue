@@ -24,6 +24,7 @@ const data = ref([
   {
     title: "Total Returns",
     total: 0,
+    days: 0, // Tambahan untuk menampilkan hari
   },
   {
     title: "Dividend Earnings",
@@ -44,19 +45,20 @@ const fetchDashboardData = async () => {
   try {
     isLoading.value = true
     error.value = ''
-    
+
     const response = await apiService.getInvestorDashboard()
-    
+
     if (response.success && response.data) {
       dashboardData.value = response.data
-      
+
       // Update data statistik
       data.value[0].total = response.data.statistics.totalInvestment
       data.value[1].total = response.data.statistics.annualReturn
       data.value[2].total = response.data.statistics.dailyReturn
       data.value[3].total = response.data.statistics.totalReturns
+      data.value[3].days = response.data.statistics.totalDays // Update total hari
       data.value[4].total = response.data.statistics.dividendEarnings
-      
+
       // Update data transaksi
       transactions.value = response.data.transactions
     }
@@ -86,13 +88,13 @@ onMounted(() => {
 
   <div v-else>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-      <div
-        v-for="(item, index) in data"
-        :key="index"
-        class="bg-blue-800 text-white p-5 rounded-xl shadow-lg"
-      >
+      <div v-for="(item, index) in data" :key="index" class="bg-blue-800 text-white p-5 rounded-xl shadow-lg">
         <p class="text-lg font-medium">{{ item.title }}</p>
-        <span class="mt-6 block text-2xl font-bold">
+        <!-- Tampilkan total hari jika ada -->
+        <p v-if="item.days !== undefined" class="text-sm text-blue-200 ">
+          {{ item.days }} days
+        </p>
+        <span class="block text-2xl font-bold" :class="{ 'mt-6': item.title !== 'Total Returns' }">
           {{ formatCurrency(item.total) }}
         </span>
       </div>
@@ -116,12 +118,8 @@ onMounted(() => {
                 Belum ada transaksi
               </td>
             </tr>
-            <tr
-              v-else
-              v-for="(item, index) in transactions"
-              :key="`${item.originalType}-${item.id}`"
-              class="odd:bg-slate-50 even:bg-white hover:bg-blue-50 transition-colors duration-150"
-            >
+            <tr v-else v-for="(item, index) in transactions" :key="`${item.originalType}-${item.id}`"
+              class="odd:bg-slate-50 even:bg-white hover:bg-blue-50 transition-colors duration-150">
               <td class="px-4 py-3 text-center">{{ index + 1 }}.</td>
               <td class="px-4 py-3">{{ formatDate(item.date) }}</td>
               <td class="px-4 py-3 capitalize">{{ item.type }}</td>

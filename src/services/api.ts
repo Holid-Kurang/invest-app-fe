@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { AxiosInstance, AxiosResponse } from 'axios'
+import type { AxiosInstance } from 'axios'
 
 const API_BASE_URL = 'http://localhost:3000/api'
 
@@ -38,27 +38,18 @@ class ApiService {
                 }
                 return config
             },
-            (error) => {
-                return Promise.reject(error)
-            }
+            (error) => Promise.reject(error)
         )
 
         // Response interceptor to handle errors
         this.axiosInstance.interceptors.response.use(
-            (response) => {
-                return response.data
-            },
+            (response) => response.data,
             (error) => {
                 const message = error.response?.data?.message || error.message || 'API call failed'
                 console.error(`API Error:`, error)
                 return Promise.reject(new Error(message))
             }
         )
-    }
-
-    // Auth endpoints
-    async login(email: string, password: string): Promise<ApiResponse<LoginResponse>> {
-        return this.axiosInstance.post('/auth/login', { email, password })
     }
 
     // Generic HTTP methods
@@ -78,85 +69,51 @@ class ApiService {
         return this.axiosInstance.delete(url, config)
     }
 
-    // Dashboard endpoints
+    // Auth
+    async login(email: string, password: string): Promise<ApiResponse<LoginResponse>> {
+        return this.post('/auth/login', { email, password }) as unknown as Promise<ApiResponse<LoginResponse>>
+    }
+
+    // Dashboard
     async getInvestorDashboard() {
-        return this.axiosInstance.get('/dashboard/investor')
+        return this.get('/dashboard/investor')
     }
 
-    // Investment endpoints
+    // Investments
     async getInvestments() {
-        return this.axiosInstance.get('/invest')
-    }
-
-    async createInvestment(amount: number, proof?: string) {
-        return this.axiosInstance.post('/invest', { amount, proof })
+        return this.get('/invest')
     }
 
     async createInvestmentWithFile(formData: FormData) {
-        return this.axiosInstance.post('/invest', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
+        return this.post('/invest', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
         })
     }
 
-    // Return endpoints
-    async getReturns() {
-        return this.axiosInstance.get('/return')
-    }
-
-    async requestReturn(amount: number) {
-        return this.axiosInstance.post('/return', { amount })
-    }
-
-    // Withdrawal endpoints
+    // Withdrawals
     async getWithdrawals() {
-        return this.axiosInstance.get('/withdrawal')
+        return this.get('/withdrawal')
     }
 
     async createWithdrawal(amount: number) {
-        return this.axiosInstance.post('/withdrawal', { amount })
+        return this.post('/withdrawal', { amount })
     }
 
-    // Admin endpoints
-    async getUsers() {
-        return this.axiosInstance.get('/admin/users')
+    // Admin - Investors
+    async getInvestors() {
+        return this.get('/admin/investors')
     }
 
-    async getAllInvestments() {
-        return this.axiosInstance.get('/admin/investments')
+    async createInvestor(investorData: { name: string; email: string; password: string }) {
+        return this.post('/admin/investors', investorData)
     }
 
-    async getAllReturns() {
-        return this.axiosInstance.get('/admin/returns')
+    async updateInvestor(id: number, investorData: { name: string; email: string; password?: string }) {
+        return this.put(`/admin/investors/${id}`, investorData)
     }
 
-    async getAllWithdrawals() {
-        return this.axiosInstance.get('/admin/withdrawals')
-    }
-
-    async approveInvestment(investId: number) {
-        return this.axiosInstance.put(`/admin/invest/${investId}/approve`)
-    }
-
-    async rejectInvestment(investId: number) {
-        return this.axiosInstance.put(`/admin/invest/${investId}/reject`)
-    }
-
-    async approveReturn(returnId: number) {
-        return this.axiosInstance.put(`/admin/return/${returnId}/approve`)
-    }
-
-    async rejectReturn(returnId: number) {
-        return this.axiosInstance.put(`/admin/return/${returnId}/reject`)
-    }
-
-    async approveWithdrawal(withdrawalId: number) {
-        return this.axiosInstance.put(`/admin/withdrawal/${withdrawalId}/approve`)
-    }
-
-    async rejectWithdrawal(withdrawalId: number) {
-        return this.axiosInstance.put(`/admin/withdrawal/${withdrawalId}/reject`)
+    async deleteInvestor(id: number) {
+        return this.delete(`/admin/investors/${id}`)
     }
 }
 
