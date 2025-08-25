@@ -115,6 +115,21 @@ class ApiService {
     async deleteInvestor(id: number) {
         return this.delete(`/admin/investors/${id}`)
     }
+
+    // Admin - All Transactions History
+    async getAllTransactions() {
+        return this.get('/admin/transactions')
+    }
+
+    // Admin - All Withdrawals
+    async getAllWithdrawals() {
+        return this.get('/withdrawal/admin/all')
+    }
+
+    // Admin - Update Withdrawal Status
+    async updateWithdrawalStatus(id: number, status: string) {
+        return this.put(`/withdrawal/${id}/status`, { status })
+    }
 }
 
 export const apiService = new ApiService()
