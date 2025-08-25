@@ -69,6 +69,11 @@ export function useWithdrawal() {
         return dashboardData.value?.statistics?.totalReturns || 0
     })
 
+    // Get dividedEaring from dashboard data (total withdrawals)
+    const dividedEaring = computed(() => {
+        return dashboardData.value?.statistics?.dividendEarnings || 0
+    })
+
     // Validation
     const validateForm = (form: WithdrawalForm) => {
         if (!form.amount || String(form.amount).trim() === '') {
@@ -87,6 +92,14 @@ export function useWithdrawal() {
             }
         }
 
+        // Validasi total return minimal 100.000
+        if (totalReturn.value < 100000) {
+            return {
+                isValid: false,
+                error: 'Total returns minimal Rp 100.000 untuk dapat melakukan withdrawal'
+            }
+        }
+
         if (amount < 100000) {
             return {
                 isValid: false,
@@ -98,6 +111,15 @@ export function useWithdrawal() {
             return {
                 isValid: false,
                 error: 'Amount tidak boleh melebihi Rp 10.000.000.000'
+            }
+        }
+
+        // Validasi amount tidak boleh melebihi sisa total return yang belum di-withdraw
+        const remainingReturn = totalReturn.value - dividedEaring.value
+        if (amount > remainingReturn) {
+            return {
+                isValid: false,
+                error: `Amount tidak boleh melebihi sisa returns yang tersedia (${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(remainingReturn)})`
             }
         }
 
@@ -229,6 +251,7 @@ export function useWithdrawal() {
         rejectedWithdrawals,
         totalSuccessWithdrawals,
         totalReturn,
+        dividedEaring,
 
         // Methods
         fetchWithdrawals,
