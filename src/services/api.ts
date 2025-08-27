@@ -130,6 +130,16 @@ class ApiService {
     async updateWithdrawalStatus(id: number, status: string) {
         return this.put(`/withdrawal/${id}/status`, { status })
     }
+
+    // Admin - Update Investment Status
+    async updateInvestmentStatus(id: number, status: string) {
+        return this.put(`/invest/${id}/status`, { status })
+    }
+
+    // Admin - Get All Investments
+    async getAllInvestments() {
+        return this.get('/invest/admin/all')
+    }
 }
 
 export const apiService = new ApiService()
