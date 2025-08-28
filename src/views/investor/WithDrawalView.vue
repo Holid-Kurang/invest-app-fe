@@ -13,7 +13,6 @@ const {
     messageClass,
     pendingWithdrawals,
     successWithdrawals,
-    totalSuccessWithdrawals,
     totalReturn,
     dividedEaring,
     fetchWithdrawals,

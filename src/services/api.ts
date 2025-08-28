@@ -78,6 +78,9 @@ class ApiService {
     async getInvestorDashboard() {
         return this.get('/dashboard/investor')
     }
+    async getAdminDashboard() {
+        return this.get('/dashboard/admin')
+    }
 
     // Investments
     async getInvestments() {

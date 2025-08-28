@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import Badge from "@/components/Badge.vue";
 import formatCurrency from "@/lib/format-currency";
-import { FileImage, Plus, Search, Trash, ChevronDown } from "lucide-vue-next";
+import { Search, ChevronDown } from "lucide-vue-next";
 import { apiService } from "@/services/api";
 
 const isLoading = ref(false);
@@ -179,7 +179,7 @@ onMounted(() => {
                     <tr class="bg-blue-800 text-white text-left">
                         <th class="px-4 py-3 font-semibold">No.</th>
                         <th class="px-4 py-3 font-semibold max-md:min-w-[200px]">
-                            Date & Time
+                            Date
                         </th>
                         <th class="px-4 py-3 font-semibold max-md:min-w-[200px]">
                             Investor
@@ -227,7 +227,7 @@ onMounted(() => {
                         <td class="px-4 py-3">{{ formatCurrency(withdrawal.amount) }}</td>
                         <td class="px-4 py-3">
                             <div class="inline-block w-full relative">
-                                <div class="w-full py-1.5 rounded cursor-pointer flex items-center justify-between hover:bg-slate-100 transition"
+                                <div class="w-full py-1.5 rounded cursor-pointer flex items-center  hover:bg-slate-100 transition"
                                     @click="toggleDropdown(index)">
                                     <Badge :value="statusLabels[withdrawal.status]" />
                                     <ChevronDown class="w-4 h-4 ml-2 transition-transform"
